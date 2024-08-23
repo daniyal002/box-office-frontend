@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import InstallBootstrap from "@/components/InstallBootstrap";
+import QueryClientContextProvider from "./QueryClientContextProvider";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import Head from "@/components/UI/Header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <AntdRegistry>
+        <QueryClientContextProvider>
+          <InstallBootstrap />
+          <body className={inter.className}>
+            <Head/>
+            {children}</body>
+        </QueryClientContextProvider>
+      </AntdRegistry>
     </html>
   );
 }
