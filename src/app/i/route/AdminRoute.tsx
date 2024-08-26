@@ -35,7 +35,7 @@ export default function AdminRoute() {
         setIsModalOpen={setIsModalOpen}
         routeId={routeId}
       />
-      <Button onClick={onAdd}>Добавить сотрудника</Button>
+      <Button onClick={onAdd}>Добавить маршрут</Button>
       <RouteTable routeData={routeData} onEdit={onEdit} />
     </div>
   );

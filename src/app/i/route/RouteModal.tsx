@@ -63,6 +63,7 @@ export default function RouteModal({
         step_number: step.step_number,
         step_number_agreed: step.step_number_agreed || 0,
         step_number_rejected: step.step_number_rejected || 0,
+        isWithdraw:step.isWithdraw
       })),
     };
     type === "Добавить" ? createRouteMutation(data) : updateRouteMutation(updateRoute);
@@ -271,6 +272,14 @@ export default function RouteModal({
                     />
                   )}
                 />
+              </div>
+
+              <div style={{display:"flex",flexDirection:'row', alignItems:'center'}}>
+                <label className={style.formItemLabel} style={{marginRight:"5px"}}>
+                  Шаг выдачи ?
+                </label>
+
+               <input type="checkbox" {...register(`steps.${index}.isWithdraw`)} />
               </div>
 
               <button

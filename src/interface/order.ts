@@ -9,7 +9,7 @@ export interface IOrderRequset {
   user_id?: number;
   order_description: string;
   order_summ: number;
-  route_id: number;
+  route_id?: number;
   status_id?: number;
   order_note: string;
   current_route_step_id: number;
@@ -27,6 +27,8 @@ export interface IOrderResponse {
     order_note?: string;
     current_route_step_id: number;
     images?:IOrderImage[]
+    created_at?:string;
+    updated_at?:string;
 }
 
 export interface IOrderImage{

@@ -4,6 +4,7 @@ import { orderService } from "@/services/order.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 
 
 export const useOrderData = () => {
@@ -19,14 +20,54 @@ export const useOrderData = () => {
     return { orderData, isLoading, error };
   };
 
+  export const useOrderUserData = () => {
+    const {
+      data: orderUserData,
+      isLoading,
+      error,
+    } = useQuery({
+      queryKey: ["UserOrders"],
+      queryFn: orderService.getOrderUser,
+      staleTime: Infinity,
+    });
+    return { orderUserData, isLoading, error };
+  };
+
+  export const useOrderByIdData = (orderId:number) => {
+    const {
+      data: orderByIdData,
+      isLoading,
+      error,
+    } = useQuery({
+      queryKey: ["OrderById"],
+      queryFn:() => orderService.getOrderByID(orderId),
+    });
+    return { orderByIdData, isLoading, error };
+  };
+
+  export const useOrderRoute = () => {
+    const {
+      data: orderRouteData,
+      isLoading,
+      error,
+    } = useQuery({
+      queryKey: ["OrderRoutes"],
+      queryFn: orderService.getOrderRoute,
+    //   staleTime: Infinity,
+    });
+    return { orderRouteData, isLoading, error };
+  };
+
   export const useCreateOrderMutation = () => {
     const queryClient = useQueryClient();
+	const { replace } = useRouter()
   
     return useMutation({
       mutationKey: ['createOrder'],
       mutationFn: (data: IOrderRequset) => orderService.addOrder(data),
       onSuccess: (newOrder) => {
-        queryClient.setQueryData(['orders'], (oldData: IOrderResponse[] | undefined) => {
+        replace("/")
+        queryClient.setQueryData(['UserOrders'], (oldData: IOrderResponse[] | undefined) => {
           return oldData ? [...oldData, newOrder] : [newOrder];
         });
         message.success('Заявка успешно создана');
@@ -39,12 +80,14 @@ export const useOrderData = () => {
 
   export const useUpdateOrderMutation = () => {
     const queryClient = useQueryClient();
+	const { replace } = useRouter()
   
     return useMutation({
       mutationKey: ['updateOrder'],
       mutationFn: (data: IOrderRequset) => orderService.updateOrder(data),
       onSuccess: (updatedOrder, variables) => {
-        queryClient.setQueryData(['orders'], (oldData: IOrderResponse[] | undefined) => {
+        replace("/")
+        queryClient.setQueryData(['UserOrders'], (oldData: IOrderResponse[] | undefined) => {
           return oldData ? oldData.map(order => order.id === variables.id ? updatedOrder : order) : [];
         });
         message.success('Заявка успешно обновлена');
@@ -62,7 +105,7 @@ export const useOrderData = () => {
       mutationKey: ['deleteOrder'],
       mutationFn: (data: IOrderRequset) => orderService.deleteOrderById(data),
       onSuccess: (_, variables) => {
-        queryClient.setQueryData(['orders'], (oldData: IOrderResponse[] | undefined) => {
+        queryClient.setQueryData(['UserOrders'], (oldData: IOrderResponse[] | undefined) => {
           return oldData ? oldData.filter(order => order.id !== variables.id) : [];
         });
         message.success('Заявка успешно удалена');
@@ -76,7 +119,7 @@ export const useOrderData = () => {
   export const useAgreedOrderMutation = () => {
     return useMutation({
       mutationKey: ['agreedOrder'],
-      mutationFn: (data: IOrderRequset) => orderService.agreedOrderById(data),
+      mutationFn: (orderId:number) => orderService.agreedOrderById(orderId),
       onSuccess: () => {
         message.success('Заявка успешно согласована');
       },
@@ -89,7 +132,7 @@ export const useOrderData = () => {
   export const useRejectedOrderMutation = () => {
     return useMutation({
       mutationKey: ['rejectedOrder'],
-      mutationFn: (data: IOrderRequset) => orderService.rejectedOrderById(data),
+      mutationFn: (orderId:number) => orderService.rejectedOrderById(orderId),
       onSuccess: () => {
         message.success('Заявка успешно отклонена');
       },
@@ -102,7 +145,7 @@ export const useOrderData = () => {
   export const useResetOrderMutation = () => {
     return useMutation({
       mutationKey: ['resetOrder'],
-      mutationFn: (data: IOrderRequset) => orderService.resetOrderById(data),
+      mutationFn: (orderId:number) => orderService.resetOrderById(orderId),
       onSuccess: () => {
         message.success('Заявка успешно сброшена');
       },

@@ -20,7 +20,7 @@ export default function Head() {
       key: 1,
       label: "Заявки",
       onClick: () => {
-        push("/order");
+        push("/");
       },
     },
     {

@@ -16,6 +16,7 @@ export interface IRouteStepRequset{
     step_number_rejected:number,
     status_id_agreed:number,
     status_id_rejected:number,
+    isWithdraw?:boolean
 }
 
 export interface IRouteStepResponse{
@@ -26,6 +27,7 @@ export interface IRouteStepResponse{
     step_number_rejected:number,
     status_agreed:IStatus,
     status_rejected:IStatus,
+    isWithdraw?:boolean
 }
 
 export interface IRouteResponse{

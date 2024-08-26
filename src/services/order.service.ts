@@ -7,6 +7,24 @@ export const orderService = {
         return response.data
     },
 
+    async getOrderUser (){
+        const response = await axiosWidthAuth.get<IOrderResponse[]>('orders/user')
+        return response.data
+    },
+
+    async getOrderByID (orderId:number){
+        if(Number.isNaN(orderId)){
+            return null
+        }
+        const response = await axiosWidthAuth.get<IOrderResponse>(`orders/${orderId}`)
+        return response.data
+    },
+
+    async getOrderRoute (){
+        const response = await axiosWidthAuth.get<IOrderResponse[]>('orders/approval')
+        return response.data
+    },
+
     async addOrder(data:IOrderRequset){
         const response = await axiosWidthAuth.post<IOrderResponse>('orders',data)
         return response.data
@@ -22,18 +40,18 @@ export const orderService = {
         return response.data
     },
 
-    async agreedOrderById(data:IOrderRequset){
-        const response = await axiosWidthAuth.post<string>(`orders/${data.id}/agreed`)
+    async agreedOrderById(orderId:number){
+        const response = await axiosWidthAuth.post<string>(`orders/${orderId}/agreed`)
         return response.data
     },
 
-    async rejectedOrderById(data:IOrderRequset){
-        const response = await axiosWidthAuth.post<string>(`orders/${data.id}/rejected`)
+    async rejectedOrderById(orderId:number){
+        const response = await axiosWidthAuth.post<string>(`orders/${orderId}/rejected`)
         return response.data
     },
 
-    async resetOrderById(data:IOrderRequset){
-        const response = await axiosWidthAuth.post<string>(`orders/${data.id}/reset`)
+    async resetOrderById(orderId:number){
+        const response = await axiosWidthAuth.post<string>(`orders/${orderId}/reset`)
         return response.data
     },
 

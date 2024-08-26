@@ -1,33 +1,47 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Form, Input, Button, Select, message, Upload } from 'antd';
-import { IOrderFormValues, IOrderRequset } from '@/interface/order';
-import { useCreateOrderMutation, useAddImagesOrderMutation, useOrderData } from '@/hook/orderHook';
+import { Button, Select, Upload } from 'antd';
+import { IOrderFormValues, IOrderRequset, IOrderResponse } from '@/interface/order';
+import { useCreateOrderMutation, useAddImagesOrderMutation, useUpdateOrderMutation, useUpdateImagesOrderMutation, useOrderUserData, useOrderData, useOrderByIdData } from '@/hook/orderHook';
 import style from './Order.module.scss';
 import { useEmployeeData } from '@/hook/employeeHook';
 import { useRouteData } from '@/hook/routeHook';
 import { UploadOutlined } from '@ant-design/icons';
 import { RcFile, UploadFile } from 'antd/lib/upload/interface';
+import OpenImage from '@/components/OpenImage/OpenImage';
 
 interface Props {
-  orderId?: number;
-  type: "Добавить" | "Изменить";
+  orderId?: string;
 }
 
-const Order = ({ orderId, type }: Props) => {
+const Order = ({ orderId }: Props) => {
   const { mutate: createOrder } = useCreateOrderMutation();
+  const { mutate: updateOrder } = useUpdateOrderMutation()
   const { mutate: addImages } = useAddImagesOrderMutation();
-  const { orderData } = useOrderData();
+  const { mutate: updateImages } = useUpdateImagesOrderMutation();
+  const { orderByIdData } = useOrderByIdData(Number(orderId));
   const { register, handleSubmit, formState: { errors }, control, reset } = useForm<IOrderFormValues>({mode:'onChange'});
-
+  
   const { employeeData } = useEmployeeData();
   const { routeData } = useRouteData();
-
+  
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [itemOrderData,setItemOrderData] = useState<IOrderResponse>()
+
+  useEffect(()=>{
+    console.log(itemOrderData)
+    if(orderByIdData){
+      setItemOrderData(orderByIdData)
+    }else if(orderId === "newOrder"){
+      setItemOrderData(undefined)
+    }
+  },[itemOrderData,orderByIdData,orderId])
 
   const onSubmit: SubmitHandler<IOrderFormValues> = (data) => {
-    console.log(data)
+    console.log(fileList)
+    if(orderId === 'newOrder'){
+
     const newOrder:IOrderRequset = {
         employee_id:data.employee.value,
         order_description:data.order_description,
@@ -36,8 +50,6 @@ const Order = ({ orderId, type }: Props) => {
         order_summ:Number(data.order_summ),
         current_route_step_id:data.current_route_step_id
     }
-    console.log(newOrder)
-
 
     createOrder(newOrder, {
       onSuccess: (newOrder) => {
@@ -47,14 +59,33 @@ const Order = ({ orderId, type }: Props) => {
         }
       },
     });
+
+  } else if (orderId !== 'newOrder'){
+   const newUpdateOrder:IOrderRequset = {
+        id:Number(orderId),
+        employee_id:data.employee.value,
+        order_description:data.order_description,
+        order_note:data.order_note as string,
+        order_summ:Number(data.order_summ),
+        current_route_step_id:data.current_route_step_id
+    }
+    console.log(fileList)
+
+    updateOrder(newUpdateOrder, {
+      onSuccess: (updateOrder) => {
+
+        if (fileList.length > 0) {
+          const files = fileList.map(file => file.originFileObj as RcFile);
+          updateImages({ orderId: updateOrder.id, files });
+        }
+      },
+    });
+  }
+
   };
 
-  const itemOrderData = orderData?.find(
-    (order) => order.id === orderId
-  );
-
   useEffect(() => {
-    if (orderId === undefined) {
+    if (orderId === 'newOrder') {
       reset({
         employee: undefined,
         route: undefined,
@@ -64,15 +95,17 @@ const Order = ({ orderId, type }: Props) => {
         current_route_step_id: undefined,
         images: undefined,
       });
-    } else if (type === "Изменить" && itemOrderData) {
+      // setFileList([]);
+    } else if (orderId !== 'newOrder' && itemOrderData) {
+      console.log(itemOrderData)
       reset({
         employee: {
-          value: itemOrderData.employee.id,
-          label: itemOrderData.employee.employee_name,
+          value: itemOrderData?.employee?.id,
+          label: itemOrderData?.employee?.employee_name,
         },
         route: {
-          value: itemOrderData.route.id,
-          label: itemOrderData.route.route_name,
+          value: itemOrderData?.route?.id,
+          label: itemOrderData?.route?.route_name,
         },
         order_description: itemOrderData.order_description,
         order_note: itemOrderData.order_note,
@@ -81,7 +114,7 @@ const Order = ({ orderId, type }: Props) => {
         images: itemOrderData.images,
       });
     }
-  }, [reset, type, orderId, itemOrderData]);
+  }, [reset, orderId, itemOrderData]);
 
   const optionsEmployee = employeeData?.map((employee) => ({
     value: employee.id,
@@ -92,6 +125,11 @@ const Order = ({ orderId, type }: Props) => {
     value: route.id,
     label: route.route_name,
   }));
+
+  // const handleFileChange = (info: { fileList: UploadFile[] }) => {
+  //   console.log(fileList)
+  //   setFileList((prevFileList) => [...info.fileList, ...prevFileList.filter((file) => file.status === 'done')]);
+  // };
 
   const handleFileChange = (info: { fileList: UploadFile[] }) => {
     setFileList(info.fileList);
@@ -189,6 +227,14 @@ const Order = ({ orderId, type }: Props) => {
         >
           <Button icon={<UploadOutlined />}>Выбрать файлы</Button>
         </Upload>
+        
+        <div className={style.images}>
+
+        {itemOrderData?.images && itemOrderData.images.map((img,index) => (
+          <OpenImage img={img} key={index}/>
+        ))}
+        </div>
+
       </div>
 
       <div className={style.formItem}>
@@ -201,7 +247,7 @@ const Order = ({ orderId, type }: Props) => {
       </div>
 
       <Button type="primary" htmlType="submit" className={style.orderSubmit}>
-        {type === "Добавить" ? "Создать заявку" : "Обновить заявку"}
+        {orderId === "newOrder" ? "Создать заявку" : "Обновить заявку"}
       </Button>
     </form>
   );

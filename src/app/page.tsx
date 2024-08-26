@@ -1,8 +1,9 @@
-import styles from "./page.module.css";
+import OrderList from "@/components/Order/OrderList/OrderList";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
+    <main className='container'>
+      <OrderList/>
     </main>
   );
 }
