@@ -8,18 +8,23 @@ import {
 import { IOrderResponse } from "@/interface/order";
 import { IStatus } from "@/interface/status";
 import { IEmployeeResponse } from "@/interface/employee";
+import { useEffect } from "react";
 
 interface OrderRoutesProps {
   orderRouteData: IOrderResponse[] | undefined;
-  onEdit: (id: number) => void;
+  showModal: (id:number) => void;
 }
 
 const OrderRoutesTable: React.FC<OrderRoutesProps> = ({
   orderRouteData,
-  onEdit,
+  showModal,
 }) => {
   const { mutate: agreedOrderMutation } = useAgreedOrderMutation();
   const { mutate: rejectedOrderMutation } = useRejectedOrderMutation();
+
+  useEffect(()=>{
+
+  },[])
 
   const columns: TableColumnsType<IOrderResponse> = [
     {
@@ -77,9 +82,26 @@ const OrderRoutesTable: React.FC<OrderRoutesProps> = ({
       key: "action",
       render: (_: any, record: IOrderResponse) => (
         <Space size="middle">
-          <Button onClick={() => agreedOrderMutation(record.id)} style={{color:"green"}}>
-            Согласовать
-          </Button>
+          {record.routeStep?.isWithdraw ? (
+             <Button onClick={() => showModal(record.id)} style={{color:"green"}}>
+             Выдать
+           </Button>
+          ) : (
+             <Button onClick={() => agreedOrderMutation({
+              id:record.id,
+              current_route_step_id:record.current_route_step_id,
+              employee_id:record.employee.id,
+              order_description:record.order_description,
+              order_note:record.order_note as string,
+              order_summ:record.order_summ,
+              route_id:record.route.id,
+              status_id:record.status.id,
+              user_id:record.user.id,
+           })} style={{color:"green"}}>
+             Согласовать
+           </Button>
+          )}
+         
           <Button onClick={() => rejectedOrderMutation(record.id)} danger>
             Отклонить
           </Button>

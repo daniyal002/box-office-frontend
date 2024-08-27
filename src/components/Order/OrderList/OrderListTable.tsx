@@ -3,7 +3,7 @@
 import { Button, Space, Table, TableColumnsType } from "antd";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useDeleteOrderMutation } from "@/hook/orderHook";
+import { useAgreedOrderMutation, useDeleteOrderMutation } from "@/hook/orderHook";
 import { IOrderResponse } from "@/interface/order";
 import { IStatus } from "@/interface/status";
 import { IEmployeeResponse } from "@/interface/employee";
@@ -15,6 +15,7 @@ interface OrderListProps {
 
 const OrderListTable: React.FC<OrderListProps> = ({ OrderData, onEdit }) => {
   const { mutate: deleteOrderMutation } = useDeleteOrderMutation();
+  const {mutate: agreedOrderMutation} = useAgreedOrderMutation()
 
   const columns: TableColumnsType<IOrderResponse> = [
     {
@@ -91,6 +92,19 @@ const OrderListTable: React.FC<OrderListProps> = ({ OrderData, onEdit }) => {
           >
             Удалить
           </Button>
+          {record.current_route_step_id === null && (
+            <Button onClick={() => agreedOrderMutation({
+              id:record.id,
+              current_route_step_id:record.current_route_step_id,
+              employee_id:record.employee.id,
+              order_description:record.order_description,
+              order_note:record.order_note as string,
+              order_summ:record.order_summ,
+              route_id:record.route.id,
+              status_id:record.status.id,
+              user_id:record.user.id,
+            })}>Повтор</Button>
+          )}
         </Space>
       ),
     },

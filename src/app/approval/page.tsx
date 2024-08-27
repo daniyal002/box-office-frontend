@@ -3,6 +3,6 @@ import React from 'react'
 
 export default function page() {
   return (
-    <div><OrderRoutes/></div>
+    <div className='container'><OrderRoutes/></div>
   )
 }

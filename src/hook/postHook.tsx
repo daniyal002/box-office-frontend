@@ -32,7 +32,7 @@ export const useCreatePostMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };
@@ -54,7 +54,7 @@ export const useUpdatePostMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };
@@ -74,7 +74,7 @@ export const useDeletePostMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };

@@ -26,7 +26,8 @@ export default function RootLayout({
         <QueryClientContextProvider>
           <InstallBootstrap />
           <body className={inter.className}>
-            <Head/>
+             <Head/>
+            
             {children}</body>
         </QueryClientContextProvider>
       </AntdRegistry>

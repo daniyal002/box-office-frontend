@@ -1,5 +1,5 @@
 import { IEmployeeOption, IEmployeeResponse } from "./employee";
-import { IRouteOption, IRouteResponse } from "./route";
+import { IRouteOption, IRouteResponse, IRouteStepRequset } from "./route";
 import { IStatus, IStatusOption } from "./status";
 import { IUserOption, IUserResponse } from "./user";
 
@@ -26,7 +26,8 @@ export interface IOrderResponse {
     status: IStatus;
     order_note?: string;
     current_route_step_id: number;
-    images?:IOrderImage[]
+    routeStep?:IRouteStepRequset;
+    images?:IOrderImage[];
     created_at?:string;
     updated_at?:string;
 }

@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from 'axios';
 import { IErrorResponse } from "@/interface/error";
 import { useRouter,permanentRedirect } from "next/navigation";
+import { message } from "antd";
 
 
 export const useLogin = () => {
@@ -15,7 +16,7 @@ export const useLogin = () => {
             replace("/")
         },
         onError(error:AxiosError<IErrorResponse>){
-            // alert(error)
+            message.error(error?.response?.data?.error);
           }  
       })
 

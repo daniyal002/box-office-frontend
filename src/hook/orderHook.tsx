@@ -73,7 +73,7 @@ export const useOrderData = () => {
         message.success('Заявка успешно создана');
       },
       onError: (error: AxiosError<IErrorResponse>) => {
-        message.error(error?.response?.data?.detail);
+        message.error(error?.response?.data?.error);
       },
     });
   };
@@ -93,7 +93,7 @@ export const useOrderData = () => {
         message.success('Заявка успешно обновлена');
       },
       onError: (error: AxiosError<IErrorResponse>) => {
-        message.error(error?.response?.data?.detail);
+        message.error(error?.response?.data?.error);
       },
     });
   };
@@ -111,33 +111,46 @@ export const useOrderData = () => {
         message.success('Заявка успешно удалена');
       },
       onError: (error: AxiosError<IErrorResponse>) => {
-        message.error(error?.response?.data?.detail);
+        message.error(error?.response?.data?.error);
       },
     });
   };
 
   export const useAgreedOrderMutation = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
       mutationKey: ['agreedOrder'],
-      mutationFn: (orderId:number) => orderService.agreedOrderById(orderId),
-      onSuccess: () => {
+      mutationFn: (data:IOrderRequset) => orderService.agreedOrderById(data),
+      onSuccess: (updatedOrder, variables) => {
+        queryClient.setQueryData(['OrderRoutes'], (oldData: IOrderResponse[] | undefined) => {
+          return oldData ? oldData.filter(order => order.id !== updatedOrder.id) : [];
+        });
+        queryClient.setQueryData(['UserOrders'], (oldData: IOrderResponse[] | undefined) => {
+          return oldData ? oldData.map(order => order.id === updatedOrder.id ? updatedOrder : order) : [];
+        });
         message.success('Заявка успешно согласована');
       },
       onError: (error: AxiosError<IErrorResponse>) => {
-        message.error(error?.response?.data?.detail);
+        message.error(error?.response?.data?.error);
       },
     });
   };
 
   export const useRejectedOrderMutation = () => {
+    const queryClient = useQueryClient();
+    
     return useMutation({
       mutationKey: ['rejectedOrder'],
       mutationFn: (orderId:number) => orderService.rejectedOrderById(orderId),
-      onSuccess: () => {
+      onSuccess: (_, variables) => {
+        queryClient.setQueryData(['OrderRoutes'], (oldData: IOrderResponse[] | undefined) => {
+          return oldData ? oldData.filter(order => order.id !== variables) : [];
+        });
         message.success('Заявка успешно отклонена');
       },
       onError: (error: AxiosError<IErrorResponse>) => {
-        message.error(error?.response?.data?.detail);
+        message.error(error?.response?.data?.error);
       },
     });
   };
@@ -150,7 +163,7 @@ export const useOrderData = () => {
         message.success('Заявка успешно сброшена');
       },
       onError: (error: AxiosError<IErrorResponse>) => {
-        message.error(error?.response?.data?.detail);
+        message.error(error?.response?.data?.error);
       },
     });
   };

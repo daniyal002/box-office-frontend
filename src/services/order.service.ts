@@ -40,8 +40,8 @@ export const orderService = {
         return response.data
     },
 
-    async agreedOrderById(orderId:number){
-        const response = await axiosWidthAuth.post<string>(`orders/${orderId}/agreed`)
+    async agreedOrderById(data:IOrderRequset){
+        const response = await axiosWidthAuth.post<IOrderResponse>(`orders/${data.id}/agreed`)
         return response.data
     },
 

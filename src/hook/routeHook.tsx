@@ -32,7 +32,7 @@ export const useCreateRouteMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };
@@ -54,7 +54,7 @@ export const useUpdateRouteMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };
@@ -74,7 +74,7 @@ export const useDeleteRouteMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };

@@ -32,7 +32,7 @@ export const useCreateCashMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };
@@ -54,7 +54,7 @@ export const useUpdateCashMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };
@@ -74,7 +74,51 @@ export const useDeleteCashMutation = () => {
       });
     },
     onError(error: AxiosError<IErrorResponse>) {
-      message.error(error?.response?.data?.detail);
+      message.error(error?.response?.data?.error);
+    },
+  });
+  return { mutate };
+};
+
+export const useDepositeCashMutation = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: ["depositeCash"],
+    mutationFn: (data: ICash) => cashService.depositCash(data),
+    onSuccess: (updatedCash) => {
+      // Update the specific post in the 'Posts' query cache
+      queryClient.setQueryData(["Cashes"], (oldData: ICash[] | undefined) => {
+        if (!oldData) return [];
+        return oldData.map((cash) =>
+          cash.id === updatedCash.id ? updatedCash : cash
+        );
+      });
+    },
+    onError(error: AxiosError<IErrorResponse>) {
+      message.error(error?.response?.data?.error);
+    },
+  });
+  return { mutate };
+};
+
+export const useWithdrawCashMutation = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: ["withdrawCash"],
+    mutationFn: (data: ICash) => cashService.withdrawCash(data),
+    onSuccess: (updatedCash) => {
+      // Update the specific post in the 'Posts' query cache
+      queryClient.setQueryData(["Cashes"], (oldData: ICash[] | undefined) => {
+        if (!oldData) return [];
+        return oldData.map((cash) =>
+          cash.id === updatedCash.id ? updatedCash : cash
+        );
+      });
+    },
+    onError(error: AxiosError<IErrorResponse>) {
+      message.error(error?.response?.data?.error);
     },
   });
   return { mutate };
