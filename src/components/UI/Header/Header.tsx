@@ -2,7 +2,14 @@
 
 import { useMenuData } from "@/hook/menuHook";
 import { IMenu } from "@/interface/menu";
-import { getAccessToken } from "@/services/auth-token.service";
+import {
+  getAccessToken,
+  getPathFromStorage,
+  removeAccessTokenFromStorage,
+  removePathFromStorage,
+  removeRefreshTokenFromStorage,
+} from "@/services/auth-token.service";
+import { useQueryClient } from "@tanstack/react-query";
 import { Layout, Menu, Spin } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -17,30 +24,42 @@ interface IMenuItem {
 
 export default function Head() {
   const path = usePathname();
-  const { push } = useRouter();
-  const token = getAccessToken()
-  const {  menuData, error, isLoading, isSuccess,status } = useMenuData(token as string);
+  const { push, replace, refresh } = useRouter();
+  const token = getAccessToken();
   const [menu, setMenu] = useState<IMenuItem[]>();
+  const { menuData, error, isLoading } = useMenuData(token as string);
+  const paths = getPathFromStorage();
 
   useEffect(() => {
-    if (token) {
-      console.log(path)
-      console.log(isSuccess)
-      console.log(menuData)
-      const menuItems = menuData?.map((menu) => ({
-        key: menu.id.toString(), // Преобразование в строку для уникальности ключа
-        label: menu.label,
-        onClick: () => {
-          push(`${menu.path}`);
-        },
-      }));
-      setMenu(menuItems);
+    // @ts-ignore
+    const pathsData: IMenu[] = JSON.parse(paths);
+    console.log(pathsData);
+    let menuItems = pathsData?.map((menu) => ({
+      key: menu.id.toString(), // Преобразование в строку для уникальности ключа
+      label: menu.label,
+      onClick: () => {
+        push(`${menu.path}`);
+      },
+    }));
+    const quit = {
+      key: (menuItems?.length * 3).toString(),
+      label: "Выход",
+      onClick: () => {
+        removeAccessTokenFromStorage();
+        removeRefreshTokenFromStorage();
+        removePathFromStorage();
+        setMenu([]);
+        refresh();
+        replace("/login");
+      },
+    };
+    if (menuItems) {
+      menuItems = [...menuItems, quit];
     }
-    console.log(token)
-    console.log(menuData)
+    setMenu(menuItems);
+  }, [token, menuData, paths]);
 
-  }, [token,isSuccess]);
-
+  if (path === "/login") return null;
 
   if (isLoading) {
     return (
@@ -67,7 +86,9 @@ export default function Head() {
           height: "64px",
         }}
       >
-        <p style={{ color: "#fff" }}>Ошибка загрузки меню</p>
+        <p style={{ fontSize: "24px", color: "#fff", marginBottom: "0" }}>
+          Документооборот
+        </p>
       </Header>
     );
   }
@@ -78,26 +99,18 @@ export default function Head() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        gap: "10px",
       }}
     >
       <p style={{ fontSize: "24px", color: "#fff", marginBottom: "0" }}>
         Документооборот
       </p>
-      {menu && (
-        <Menu
+      <Menu
         mode="horizontal"
-        items={menuData?.map(item => ({
-          key: item.id,
-          label: item.label,
-          onClick: () => {
-            push(`${item.path}`);
-          },
-        }))}
+        items={menu}
         theme="dark"
-        style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        style={{ width: "40%", display: "flex", justifyContent: "flex-end" }}
       />
-      )}
-      
     </Header>
   );
 }

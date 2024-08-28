@@ -30,3 +30,12 @@ export const saveRefreshToken = (refresh_token: string) => {
 export const removeRefreshTokenFromStorage = () => {
     Cookies.remove(EnumTokens.REFRESH_TOKEN)
 }
+
+export const getPathFromStorage = () => {
+    const path = Cookies.get("path")
+    return path || null
+}
+
+export const removePathFromStorage = () => {
+    Cookies.remove('path')
+}

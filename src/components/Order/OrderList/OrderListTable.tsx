@@ -1,12 +1,24 @@
 "use client";
 
-import { Button, Space, Table, TableColumnsType } from "antd";
+import { Button, DatePicker, Space, Table, TableColumnsType } from "antd";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useAgreedOrderMutation, useDeleteOrderMutation } from "@/hook/orderHook";
 import { IOrderResponse } from "@/interface/order";
 import { IStatus } from "@/interface/status";
 import { IEmployeeResponse } from "@/interface/employee";
+import dayjs from "dayjs";
+import isBetween from 'dayjs/plugin/isBetween';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import locale from "antd/es/date-picker/locale/ru_RU";
+import 'dayjs/locale/ru'
+
+dayjs.extend(isBetween); // Extend dayjs with the isBetween plugin
+dayjs.extend(isSameOrAfter); // Extend dayjs with the isBetween plugin
+dayjs.extend(isSameOrBefore); // Extend dayjs with the isBetween plugin
+dayjs.locale('ru') 
+import { useState } from "react";
 
 interface OrderListProps {
   OrderData: IOrderResponse[] | undefined;
@@ -16,6 +28,19 @@ interface OrderListProps {
 const OrderListTable: React.FC<OrderListProps> = ({ OrderData, onEdit }) => {
   const { mutate: deleteOrderMutation } = useDeleteOrderMutation();
   const {mutate: agreedOrderMutation} = useAgreedOrderMutation()
+
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
+
+  const handleDateChange = (dates: [dayjs.Dayjs, dayjs.Dayjs] | null, dateStrings: [string, string]) => {
+    setDateRange(dates);
+  };
+
+  const filteredData = OrderData?.filter(order => {
+    if (!dateRange) return true;
+
+    const orderDate = dayjs(order.created_at);
+    return orderDate.isSameOrAfter(dateRange[0], 'day') && orderDate.isSameOrBefore(dateRange[1], 'day');
+  });
 
   const columns: TableColumnsType<IOrderResponse> = [
     {
@@ -42,6 +67,18 @@ const OrderListTable: React.FC<OrderListProps> = ({ OrderData, onEdit }) => {
           second: '2-digit',
         });
       },
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <DatePicker.RangePicker
+            // @ts-ignore
+            onChange={handleDateChange}
+            style={{ width: 188, marginBottom: 8 }}
+            format="DD-MM-YYYY"
+            locale={locale}
+          />
+        </div>
+      ),
+      filterIcon: () => <span>📅</span>,
     },
     {
       title: "Статус",
@@ -110,13 +147,13 @@ const OrderListTable: React.FC<OrderListProps> = ({ OrderData, onEdit }) => {
     },
   ];
 
-  const dataSource = OrderData?.map((order) => ({
+  const dataSource = filteredData?.map((order) => ({
     ...order,
     key: order.id, // Ensure each item has a unique key
   }));
 
   return (
-    <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} />
+    <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} pagination={{pageSize:10}}/>
   );
 };
 

@@ -8,11 +8,9 @@ export const useMenuData = (accessToken:string) => {
       data: menuData,
       isLoading,
       error,
-      isSuccess,
-      status
     } = useQuery({
       queryKey: ["Menu"],
       queryFn: () => menuService.getMenu(accessToken),
     });
-    return { menuData, isLoading, error,isSuccess,status };
+    return { menuData, isLoading, error};
   };

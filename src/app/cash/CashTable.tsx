@@ -54,7 +54,7 @@ const CashTable: React.FC<CashProps> = ({ cashData, onDeposite, onWithdraw }) =>
   }));
 
   return (
-    <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} />
+    <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} pagination={{pageSize:10}}/>
   );
 };
 

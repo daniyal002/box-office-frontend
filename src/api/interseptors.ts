@@ -3,7 +3,7 @@ import { authService } from '@/services/auth.service';
 import axios, { type CreateAxiosDefaults } from 'axios';
 
 const options: CreateAxiosDefaults = {
-    baseURL: "http://localhost:3002",
+    baseURL: "http://192.168.30.119:3002",
     headers: {
         'Content-Type': 'application/json',
     },
@@ -33,15 +33,15 @@ axiosWidthAuth.interceptors.response.use(
             if (!refreshToken) {
                 removeAccessTokenFromStorage();
                 removeRefreshTokenFromStorage();
-                return window.location.replace("/login");
+                if (typeof window !== 'undefined') {
+                    window.location.replace("/login"); // Выполняется только на клиенте
+                }
+                return Promise.reject(error);
             }
 
             try {
-                const { accessToken } = await authService.refresh({refreshToken:refreshToken});
+                const { accessToken } = await authService.refresh({refreshToken: refreshToken});
                 saveAccessToken(accessToken);
-
-                // Обновляем заголовок оригинального запроса с новым access_token
-                // originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
 
                 // Повторяем оригинальный запрос с новым токеном
                 return axiosWidthAuth(originalRequest);
@@ -49,11 +49,15 @@ axiosWidthAuth.interceptors.response.use(
                 console.error("Error during token refresh:", refreshError);
                 removeAccessTokenFromStorage();
                 removeRefreshTokenFromStorage();
-                return window.location.replace("/login");
+                if (typeof window !== 'undefined') {
+                    window.location.replace("/login"); // Выполняется только на клиенте
+                }
+                return Promise.reject(refreshError);
             }
         }
 
         return Promise.reject(error);
     }
 );
+
 export { axiosClassic, axiosWidthAuth };

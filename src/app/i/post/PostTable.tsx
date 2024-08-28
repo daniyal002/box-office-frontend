@@ -59,7 +59,7 @@ const PostTable: React.FC<PostTableProps> = ({ postData, onEdit }) => {
     key: post.id, // Ensure each item has a unique key
   }));
 
-  return <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} />;
+  return <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} pagination={{pageSize:10}}/>;
 };
 
 export default PostTable;

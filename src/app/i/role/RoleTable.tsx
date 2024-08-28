@@ -59,7 +59,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roleData, onEdit }) => {
     key: role.id, // Ensure each item has a unique key
   }));
 
-  return <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }}/>;
+  return <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} pagination={{pageSize:10}}/>;
 };
 
 export default RoleTable;

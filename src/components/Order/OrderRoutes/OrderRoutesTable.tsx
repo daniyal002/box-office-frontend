@@ -9,6 +9,7 @@ import { IOrderResponse } from "@/interface/order";
 import { IStatus } from "@/interface/status";
 import { IEmployeeResponse } from "@/interface/employee";
 import { useEffect } from "react";
+import Link from "next/link";
 
 interface OrderRoutesProps {
   orderRouteData: IOrderResponse[] | undefined;
@@ -105,6 +106,7 @@ const OrderRoutesTable: React.FC<OrderRoutesProps> = ({
           <Button onClick={() => rejectedOrderMutation(record.id)} danger>
             Отклонить
           </Button>
+          <Link href={`/approval/${record.id}`}>Подробно</Link>
         </Space>
       ),
     },
@@ -116,7 +118,7 @@ const OrderRoutesTable: React.FC<OrderRoutesProps> = ({
   }));
 
   return (
-    <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} />
+    <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} pagination={{pageSize:10}}/>
   );
 };
 
