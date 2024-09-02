@@ -13,6 +13,12 @@
             color: #649ace;
         }
 
+        .formItemLabelReject{
+            font-size: 16px;
+            font-weight: 600;
+            color: #d46e6e;
+        }
+
         .orderName{
             padding: 10px;
             border: 2px solid #678098;
@@ -25,6 +31,21 @@
             }
             &::placeholder{
                 color: #678098;
+            }
+        }
+
+        .orderNameReject{
+            padding: 10px;
+            border: 2px solid #d46e6e;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+    
+            &:focus{
+            border: 2px solid #e03636;
+            }
+            &::placeholder{
+                color: #ff9191;
             }
         }
     }
@@ -48,6 +69,20 @@
         &:hover{
             background-color: #678098;
         }
-       
+    }
+
+    .orderSubmitReject{
+        padding: 10px;
+        border-radius: 6px;
+        border: 0;
+        background-color: #cc3e3e;
+        color: #fff;
+        font-size: 18px;
+        letter-spacing: 0.8px;
+        transition: 0.5s;
+        cursor: pointer;
+        &:hover{
+            background-color: #e03636;
+        }
     }
 }

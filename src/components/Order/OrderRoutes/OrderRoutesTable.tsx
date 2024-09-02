@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Space, Table, TableColumnsType } from "antd";
+import { Button, Input, message, Popconfirm, PopconfirmProps, Space, Table, TableColumnsType } from "antd";
 import {
   useAgreedOrderMutation,
   useRejectedOrderMutation,
@@ -8,8 +8,9 @@ import {
 import { IOrderResponse } from "@/interface/order";
 import { IStatus } from "@/interface/status";
 import { IEmployeeResponse } from "@/interface/employee";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import OrderRoutesModalReject from "./OrderRoutesModalReject";
 
 interface OrderRoutesProps {
   orderRouteData: IOrderResponse[] | undefined;
@@ -20,12 +21,12 @@ const OrderRoutesTable: React.FC<OrderRoutesProps> = ({
   orderRouteData,
   showModal,
 }) => {
+
+
   const { mutate: agreedOrderMutation } = useAgreedOrderMutation();
-  const { mutate: rejectedOrderMutation } = useRejectedOrderMutation();
 
-  useEffect(()=>{
-
-  },[])
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [orderId, setOrderId] = useState<number>()
 
   const columns: TableColumnsType<IOrderResponse> = [
     {
@@ -103,7 +104,8 @@ const OrderRoutesTable: React.FC<OrderRoutesProps> = ({
            </Button>
           )}
          
-          <Button onClick={() => rejectedOrderMutation(record.id)} danger>
+        
+          <Button onClick={() => {setOrderId(record.id);setIsModalOpen(true)}} danger>
             Отклонить
           </Button>
           <Link href={`/approval/${record.id}`}>Подробно</Link>
@@ -118,7 +120,10 @@ const OrderRoutesTable: React.FC<OrderRoutesProps> = ({
   }));
 
   return (
+    <>
+    <OrderRoutesModalReject isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} orderId={orderId as number}/>
     <Table dataSource={dataSource} columns={columns} scroll={{ x: 200 }} pagination={{pageSize:10}}/>
+    </>
   );
 };
 

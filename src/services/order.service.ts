@@ -45,8 +45,8 @@ export const orderService = {
         return response.data
     },
 
-    async rejectedOrderById(orderId:number){
-        const response = await axiosWidthAuth.post<string>(`orders/${orderId}/rejected`)
+    async rejectedOrderById(orderId:number,message:string){
+        const response = await axiosWidthAuth.post<string>(`orders/${orderId}/rejected`,{messageB:message})
         return response.data
     },
 

@@ -139,13 +139,14 @@ export const useOrderData = () => {
 
   export const useRejectedOrderMutation = () => {
     const queryClient = useQueryClient();
-    
+  
     return useMutation({
       mutationKey: ['rejectedOrder'],
-      mutationFn: (orderId:number) => orderService.rejectedOrderById(orderId),
+      mutationFn: ({ orderId, message }: { orderId: number; message: string }) => 
+        orderService.rejectedOrderById(orderId, message),
       onSuccess: (_, variables) => {
         queryClient.setQueryData(['OrderRoutes'], (oldData: IOrderResponse[] | undefined) => {
-          return oldData ? oldData.filter(order => order.id !== variables) : [];
+          return oldData ? oldData.filter(order => order.id !== variables.orderId) : [];
         });
         message.success('Заявка успешно отклонена');
       },
@@ -154,6 +155,7 @@ export const useOrderData = () => {
       },
     });
   };
+  
 
   export const useResetOrderMutation = () => {
     return useMutation({
