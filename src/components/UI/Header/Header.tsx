@@ -33,7 +33,6 @@ export default function Head() {
   useEffect(() => {
     // @ts-ignore
     const pathsData: IMenu[] = JSON.parse(paths);
-    console.log(pathsData);
     let menuItems = pathsData?.map((menu) => ({
       key: menu.id.toString(), // Преобразование в строку для уникальности ключа
       label: menu.label,

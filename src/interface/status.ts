@@ -1,6 +1,9 @@
+import { OrderStatus } from "@/helper/orderStatusEnum";
+
 export interface IStatus{
     id:number,
-    status_name:string
+    status_name:string,
+    orderStatus: OrderStatus
 }
 
 export interface IStatusOption {

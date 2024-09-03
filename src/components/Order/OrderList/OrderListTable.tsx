@@ -22,10 +22,9 @@ import { useState } from "react";
 
 interface OrderListProps {
   OrderData: IOrderResponse[] | undefined;
-  onEdit: (id: number) => void;
 }
 
-const OrderListTable: React.FC<OrderListProps> = ({ OrderData, onEdit }) => {
+const OrderListTable: React.FC<OrderListProps> = ({ OrderData }) => {
   const { mutate: deleteOrderMutation } = useDeleteOrderMutation();
   const {mutate: agreedOrderMutation} = useAgreedOrderMutation()
 

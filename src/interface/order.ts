@@ -5,7 +5,7 @@ import { IUserOption, IUserResponse } from "./user";
 
 export interface IOrderRequset {
   id?: number;
-  employee_id: number;
+  employee_id?: number;
   user_id?: number;
   order_description: string;
   order_summ: number;
@@ -41,7 +41,7 @@ export interface IOrderImage{
 
 export interface IOrderFormValues {
     id: number;
-    employee: IEmployeeOption;
+    employee?: IEmployeeOption;
     user: IUserOption;
     order_description: string;
     order_summ: number;

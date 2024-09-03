@@ -8,7 +8,6 @@ import {  useOrderUserData } from "@/hook/orderHook";
 
 export default function OrderList() {
   const { orderUserData } = useOrderUserData();
-  const onEdit = (id: number) => console.log(id);
 
   return (
     <div className={style.orderList}>
@@ -18,7 +17,7 @@ export default function OrderList() {
           Создать заявку
         </Link>
       </div>
-        <OrderListTable OrderData={orderUserData} onEdit={onEdit} />
+        <OrderListTable OrderData={orderUserData}/>
     </div>
   );
 }

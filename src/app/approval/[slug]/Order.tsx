@@ -16,7 +16,6 @@ const Order = ({ orderId }: Props) => {
   const [itemOrderData,setItemOrderData] = useState<IOrderResponse>()
 
   useEffect(()=>{
-    console.log(itemOrderData)
     if(orderByIdData){
       setItemOrderData(orderByIdData)
     }else if(orderId === "newOrder"){

@@ -1,10 +1,11 @@
 
-import { Modal } from "antd";
+import { Modal, Select } from "antd";
 import React, { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import style from "./StatusModal.module.scss";
 import { useCreateStatusMutation, useStatusData, useUpdateStatusMutation } from "@/hook/statusHook";
 import { IStatus } from "@/interface/status";
+import { OrderStatus } from "@/helper/orderStatusEnum";
 
 interface Props {
   type: "Добавить" | "Изменить";
@@ -24,6 +25,7 @@ export default function StatusModal({
     handleSubmit,
     formState: { errors },
     reset,
+    control
   } = useForm<IStatus>({ mode: "onChange" });
   const { statusData } = useStatusData();
   const { mutate: createStatusMutation } = useCreateStatusMutation();
@@ -48,6 +50,20 @@ export default function StatusModal({
     }
   }, [reset, type, statusId, itemStatusData]);
 
+  const optionOrderStatus = [{
+    value: OrderStatus.APPROVED,
+    label: "Согласован"
+  },
+  {
+    value: OrderStatus.PENDING,
+    label: "В ожидании"
+  },
+  {
+    value: OrderStatus.REJECTED,
+    label: "Отклонен"
+  }
+];
+
   return (
     <>
       <Modal
@@ -71,7 +87,31 @@ export default function StatusModal({
               })}
             />
           </div>
-          {errors && <p className={style.error}>{errors.status_name?.message}</p>}
+          {errors.status_name && <p className={style.error}>{errors.status_name?.message}</p>}
+
+          <div className={style.formItem}>
+          <label className={style.formItemLabel}>Выберите действие</label>
+          <Controller
+            control={control}
+            name="orderStatus"
+            rules={{
+              required: { message: "Выберите действие", value: true },
+            }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={optionOrderStatus}
+                onChange={(value, option) =>
+                  // @ts-ignore: Unreachable code error
+                  field.onChange(value)
+                }
+                placeholder="Действие"
+              />
+            )}
+          />
+        </div>
+
+        {errors.orderStatus && <p className={style.error}>{errors.orderStatus?.message}</p>}
 
           <button type="submit" className={style.statusNameSubmit}>
             {type}

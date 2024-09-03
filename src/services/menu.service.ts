@@ -5,7 +5,6 @@ import Cookies from 'js-cookie'
 
 export const menuService = {
     async getMenu (token:string){
-        console.log(token)
         if(token){
             const response = await axiosWidthAuth.get<IMenu[]>('menu')
             if(response.data){

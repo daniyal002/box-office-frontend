@@ -11,10 +11,7 @@ export default function AdminRole() {
   const { roleData } = useRoleData();
   const [type, setType] = useState<"Добавить" | "Изменить">("Добавить");
   const [roleId, setRoleId] = useState<number>();
-useEffect(()=>{
-console.log(roleData)
 
-},[roleData])
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onAdd = () => {

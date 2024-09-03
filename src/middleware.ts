@@ -2,17 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { IMenu } from './interface/menu';
 
-// Функция для получения разрешенных путей
+// Function to get allowed paths
 async function getAllowedPaths() {
   const path = cookies().get("path");
   if (!path) return null;
 
   try {
-    const paths:IMenu[] = JSON.parse(path.value);
-    const allowedPaths = paths.map(menu => menu.path)
+    const paths: IMenu[] = JSON.parse(path.value);
+    const allowedPaths = paths.map(menu => menu.path);
     return allowedPaths;
   } catch (error) {
-    console.error('Ошибка при получении меню:', error);
+    console.error('Error retrieving menu:', error);
     return null;
   }
 }
@@ -20,17 +20,25 @@ async function getAllowedPaths() {
 export async function middleware(req: NextRequest) {
   const allowedPaths = await getAllowedPaths();
   const currentPath = req.nextUrl.pathname;
-  if(allowedPaths === null) return NextResponse.redirect(new URL('/login', req.nextUrl.origin));
-  if (!allowedPaths || !allowedPaths.includes(currentPath)) {
-    // Серверное перенаправление на страницу 403
+
+  if (allowedPaths === null) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl.origin));
+  }
+
+  const isPathAllowed = allowedPaths.some(allowedPath =>
+    currentPath === allowedPath || currentPath.startsWith(allowedPath + '/')
+  );
+
+  if (!isPathAllowed) {
+    // Server-side redirect to 403 page
     return NextResponse.redirect(new URL('/', req.nextUrl.origin));
   }
 
-  // Если все проверки пройдены, продолжаем выполнение запроса
+  // Continue with the request if all checks pass
   return NextResponse.next();
 }
 
-// Указываем, что middleware должен работать на всех маршрутах
+// Specify that middleware should work on all routes
 export const config = {
-  matcher: ['/((?!login|403|_next|static|order/*|i/*).*)'], // Исключаем страницы логина, ошибки 403 и статические файлы
+  matcher: ['/((?!login|403|_next|static|order/*).*)'], // Exclude login, 403, static files, etc.
 };
