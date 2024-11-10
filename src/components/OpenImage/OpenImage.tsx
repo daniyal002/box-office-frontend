@@ -10,7 +10,7 @@ const OpenImage = ({ img }: Props) => {
     <>
       <Image
         width={200}
-        src={`http://192.168.30.119:3002/${img.image_src.replace(/\\/g, "/")}`}
+        src={`http://176.124.208.40:3002/${img.image_src.replace(/\\/g, "/")}`}
       />
     </>
   );

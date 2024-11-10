@@ -17,8 +17,9 @@ import 'dayjs/locale/ru'
 dayjs.extend(isBetween); // Extend dayjs with the isBetween plugin
 dayjs.extend(isSameOrAfter); // Extend dayjs with the isBetween plugin
 dayjs.extend(isSameOrBefore); // Extend dayjs with the isBetween plugin
-dayjs.locale('ru') 
+dayjs.locale('ru')
 import { useState } from "react";
+import { OrderStatus } from "@/helper/orderStatusEnum";
 
 interface OrderListProps {
   OrderData: IOrderResponse[] | undefined;
@@ -111,36 +112,40 @@ const OrderListTable: React.FC<OrderListProps> = ({ OrderData }) => {
       render: (_: any, record: IOrderResponse) => (
         <Space size="middle">
           <Link href={`/order/${record.id}`}>Изменить</Link>
-          <Button
-            type="primary"
-            danger
-            onClick={() =>
-              toast.error("Вы точно хотите удалить заявку ?", {
-                style: {
-                  color: "red",
-                },
-                action: {
-                  label: "Удалить",
-                  onClick: () => deleteOrderMutation({employee_id:record.employee.id,current_route_step_id:record.current_route_step_id,order_description:record.order_description,order_note:record.order_note as string,order_summ:record.order_summ,id:record.id}),
-                },
-              })
-            }
-          >
-            Удалить
-          </Button>
-          {record.current_route_step_id === null && (
-            <Button onClick={() => agreedOrderMutation({
-              id:record.id,
-              current_route_step_id:record.current_route_step_id,
-              employee_id:record.employee.id,
-              order_description:record.order_description,
-              order_note:record.order_note as string,
-              order_summ:record.order_summ,
-              route_id:record.route.id,
-              status_id:record.status.id,
-              user_id:record.user.id,
-            })}>Повтор</Button>
+          {record.status.orderStatus !== OrderStatus.WITHDRAW && (
+             <Button
+             type="primary"
+             danger
+             onClick={() =>
+               toast.error("Вы точно хотите удалить заявку ?", {
+                 style: {
+                   color: "red",
+                 },
+                 action: {
+                   label: "Удалить",
+                   onClick: () => deleteOrderMutation({employee_id:record.employee.id,current_route_step_id:record.current_route_step_id,order_description:record.order_description,order_note:record.order_note as string,order_summ:record.order_summ,id:record.id}),
+                 },
+               })
+             }
+           >
+             Удалить
+           </Button>
           )}
+           {(record.current_route_step_id === null && record.status.orderStatus !== OrderStatus.WITHDRAW) && (
+             <Button onClick={() => agreedOrderMutation({
+               id:record.id,
+               current_route_step_id:record.current_route_step_id,
+               employee_id:record.employee.id,
+               order_description:record.order_description,
+               order_note:record.order_note as string,
+               order_summ:record.order_summ,
+               route_id:record.route.id,
+               status_id:record.status.id,
+               user_id:record.user.id,
+             })}>Повтор</Button>
+           )
+          }
+
         </Space>
       ),
     },

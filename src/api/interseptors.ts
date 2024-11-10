@@ -3,7 +3,9 @@ import { authService } from '@/services/auth.service';
 import axios, { type CreateAxiosDefaults } from 'axios';
 
 const options: CreateAxiosDefaults = {
-    baseURL: "http://192.168.30.119:3002",
+    // baseURL: "http://192.168.30.119:3002",
+    baseURL: "http://176.124.208.40:3002",
+
     headers: {
         'Content-Type': 'application/json',
     },
