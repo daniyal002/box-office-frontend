@@ -3,11 +3,13 @@ import OrderListTable from "./OrderListTable";
 import Link from "next/link";
 import style from "./OrderList.module.scss";
 import { Toaster } from "sonner";
-import {  useOrderUserData } from "@/hook/orderHook";
+import { IOrderResponse } from "@/interface/order";
 
+interface Props{
+  orderData:IOrderResponse[]
+}
 
-export default function OrderList() {
-  const { orderUserData } = useOrderUserData();
+export default function OrderList({orderData}:Props) {
 
   return (
     <div className={style.orderList}>
@@ -17,7 +19,7 @@ export default function OrderList() {
           Создать заявку
         </Link>
       </div>
-        <OrderListTable OrderData={orderUserData}/>
+        <OrderListTable OrderData={orderData}/>
     </div>
   );
 }

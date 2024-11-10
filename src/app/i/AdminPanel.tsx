@@ -79,6 +79,16 @@ export default function AdminPanel() {
         >
           Должности
         </button>
+        <button
+          onClick={() => push("/i/orders")}
+          className={
+            isActive("/i/orders")
+              ? `${style.adminButton} ${style.active}`
+              : style.adminButton
+          }
+        >
+          Все заявки
+        </button>
       </div>
   );
 }

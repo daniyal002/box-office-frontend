@@ -137,6 +137,8 @@ const Order = ({ orderId }: Props) => {
       {toggle ? (
         <OrderHistory historyData={historyData as IHistory[]} />
       ) : (
+        <>
+        <h2>{orderByIdData?.employee.employee_name}</h2>
         <form onSubmit={handleSubmit(onSubmit)} className={style.orderForm}>
           <div className={style.formItem}>
             <label className={style.formItemLabel}>Выберите маршрут</label>
@@ -250,6 +252,7 @@ const Order = ({ orderId }: Props) => {
             )
           )}
         </form>
+        </>
       )}
     </>
   );

@@ -89,6 +89,15 @@ export default function AdminSider() {
 
       },
     },
+    {
+      key: "9",
+      label: "Все заявки",
+      onClick: () => {
+        push("/i/orders");
+        setVisible(false)
+
+      },
+    },
   ];
 
   useEffect(() => {

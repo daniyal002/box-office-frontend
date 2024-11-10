@@ -1,14 +1,14 @@
 'use client'
 import OrderList from "@/components/Order/OrderList/OrderList";
-import { useOrderUserData } from "@/hook/orderHook";
+import { useOrderData, useOrderUserData } from "@/hook/orderHook";
 import { IOrderResponse } from "@/interface/order";
 
 export default function Home() {
-  const { orderUserData } = useOrderUserData();
+  const { orderData } = useOrderData();
 
   return (
     <main className='container'>
-      <OrderList orderData={orderUserData as IOrderResponse[]} />
+      <OrderList orderData={orderData as IOrderResponse[]} />
     </main>
   );
 }
