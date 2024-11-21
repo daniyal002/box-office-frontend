@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import Highlighter from "react-highlight-words";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import 'dayjs/locale/ru'
 
@@ -20,6 +21,9 @@ dayjs.extend(isSameOrBefore); // Extend dayjs with the isBetween plugin
 dayjs.locale('ru')
 import { useState } from "react";
 import { OrderStatus } from "@/helper/orderStatusEnum";
+import { useSearch } from "./hook/useSearch";
+import SearchFilter from "./filters/SearchFilter";
+import { SearchOutlined } from "@ant-design/icons";
 
 interface OrderListProps {
   OrderData: IOrderResponse[] | undefined;
@@ -30,6 +34,7 @@ const OrderListTable: React.FC<OrderListProps> = ({ OrderData }) => {
   const {mutate: agreedOrderMutation} = useAgreedOrderMutation()
 
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
+  const { searchText, searchedColumn, searchInput, handleSearch, handleReset } = useSearch();
 
   const handleDateChange = (dates: [dayjs.Dayjs, dayjs.Dayjs] | null, dateStrings: [string, string]) => {
     setDateRange(dates);
@@ -49,6 +54,41 @@ const OrderListTable: React.FC<OrderListProps> = ({ OrderData }) => {
       key: "id",
       sorter: (a: any, b: any) =>
         a.id - b.id,
+      filterDropdown: (props) => (
+        <SearchFilter
+          {...props}
+          searchText={searchText}
+          searchedColumn={searchedColumn}
+          dataIndex="id"
+          searchInput={searchInput}
+          handleSearch={handleSearch}
+          handleReset={handleReset}
+        />
+      ),
+      filterIcon: (filtered: boolean) => (
+        <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.id
+          .toString()
+          .toLowerCase()
+          .includes((value as string).toLowerCase()),
+      onFilterDropdownOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+      render: (text) =>
+        searchedColumn === "id" ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text ? text.toString() : ""}
+          />
+        ) : (
+          text
+        ),
     },
     {
       title: "Дата",

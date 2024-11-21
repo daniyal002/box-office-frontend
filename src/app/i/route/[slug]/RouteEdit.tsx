@@ -1,3 +1,4 @@
+'use client'
 import { Modal, Select } from "antd";
 import React, { useEffect } from "react";
 import {
@@ -6,7 +7,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import style from "./RouteModal.module.scss";
+import style from "./RouteEdit.module.scss";
 import { useEmployeeData } from "@/hook/employeeHook";
 import { IRouteRequest } from "@/interface/route";
 import {
@@ -15,19 +16,14 @@ import {
   useUpdateRouteMutation,
 } from "@/hook/routeHook";
 import { useStatusData } from "@/hook/statusHook";
+import { useRouter } from "next/navigation";
 
 interface Props {
-  type: "Добавить" | "Изменить";
-  routeId?: number;
-  isModalOpen: boolean;
-  setIsModalOpen: (open: boolean) => void;
+  routeId?: string;
 }
 
-export default function RouteModal({
-  type,
+export default function RouteEdit({
   routeId,
-  isModalOpen,
-  setIsModalOpen,
 }: Props) {
   const {
     register,
@@ -38,6 +34,7 @@ export default function RouteModal({
     watch,
     getValues,
   } = useForm<IRouteRequest>({ mode: "onChange" });
+  const { replace } = useRouter()
   const { routeData } = useRouteData();
   const { employeeData } = useEmployeeData();
   const { statusData } = useStatusData();
@@ -66,27 +63,27 @@ export default function RouteModal({
         isWithdraw:step.isWithdraw
       })),
     };
-    type === "Добавить" ? createRouteMutation(data) : updateRouteMutation(updateRoute);
+    !isNaN(Number(routeId))   ? updateRouteMutation(updateRoute) : createRouteMutation(data);
     reset();
-    setIsModalOpen(false);
+    replace('/i/route');
   };
 
-  const itemRouteData = routeData?.find((route) => route.id === routeId);
+  const itemRouteData = routeData?.find((route) => route.id === Number(routeId));
 
   useEffect(() => {
-    if (routeId === undefined) {
+    if (routeId === 'newRoute') {
       reset({
         route_name: undefined,
         steps: undefined,
       });
-    } else if (type === "Изменить" && itemRouteData) {
+    } else if (!isNaN(Number(routeId)) && itemRouteData) {
       reset({
         id: itemRouteData?.id,
         route_name: itemRouteData?.route_name,
         steps: itemRouteData?.steps,
       });
     }
-  }, [reset, type, routeId, itemRouteData]);
+  }, [reset, routeId, itemRouteData]);
 
   const optionsEmployee = employeeData?.map((employee) => ({
     value: employee.id as number,
@@ -99,15 +96,7 @@ export default function RouteModal({
   }));
 
   return (
-    <Modal
-      title={`${type} маршрут`}
-      open={isModalOpen}
-      onCancel={() => {
-        setIsModalOpen(false);
-        reset();
-      }}
-      footer={null}
-    >
+    <>
       <form onSubmit={handleSubmit(onSubmit)} className={style.routeForm}>
         <div className={style.formItem}>
           <label className={style.formItemLabel}>Название маршрута</label>
@@ -187,10 +176,13 @@ export default function RouteModal({
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={fields.map((step, index) => ({
-                        value: Number(getValues(`steps.${index}.step_number`)),
-                        label: `Шаг ${getValues(`steps.${index}.step_number`)}`,
-                      }))}
+                      options={[
+                        { value: 0, label: "пусто" },
+                        ...fields.map((step, index) => ({
+                          value: Number(getValues(`steps.${index}.step_number`)),
+                          label: `Шаг ${getValues(`steps.${index}.step_number`)}`,
+                        })).filter((_, stepIndex) => stepIndex !== index)
+                      ]}
                       placeholder="следующий номер шага"
                       className={style.select}
                     />
@@ -238,10 +230,13 @@ export default function RouteModal({
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={fields.map((step, index) => ({
-                        value: Number(getValues(`steps.${index}.step_number`)),
-                        label: `Шаг ${getValues(`steps.${index}.step_number`)}`,
-                      }))}
+                      options={[
+                        { value: 0, label: "пусто" },
+                        ...fields.map((step, index) => ({
+                          value: Number(getValues(`steps.${index}.step_number`)),
+                          label: `Шаг ${getValues(`steps.${index}.step_number`)}`,
+                        })).filter((_, stepIndex) => stepIndex !== index)
+                      ]}
                       placeholder="Номер шага при отклонении"
                       className={style.select}
                     />
@@ -296,7 +291,7 @@ export default function RouteModal({
             onClick={() =>
               append({
                 id: Date.now(), // Используем временный ID
-                route_id: routeId ?? 0, // Используем ID маршрута, если он известен
+                route_id: Number(routeId) ?? 0, // Используем ID маршрута, если он известен
                 step_number: fields.length + 1,
                 employee_id: 0,
                 step_number_agreed: 0,
@@ -312,9 +307,9 @@ export default function RouteModal({
         </div>
 
         <button type="submit" className={style.routeNameSubmit}>
-          {type}
+          {!isNaN(Number(routeId)) ? 'Обновить' : 'Создать'}
         </button>
       </form>
-    </Modal>
+    </>
   );
 }

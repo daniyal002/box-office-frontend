@@ -4,15 +4,14 @@ import { Button, Space, Table, TableColumnsType } from "antd";
 import { toast } from "sonner";
 import { IRouteResponse } from "@/interface/route";
 import { useDeleteRouteMutation } from "@/hook/routeHook";
+import Link from "next/link";
 
 interface RouteTableProps {
   routeData: IRouteResponse[] | undefined;
-  onEdit: (id: number) => void;
 }
 
 const RouteTable: React.FC<RouteTableProps> = ({
   routeData,
-  onEdit,
 }) => {
   const { mutate: deleteRouteMutation } = useDeleteRouteMutation();
 
@@ -36,9 +35,9 @@ const RouteTable: React.FC<RouteTableProps> = ({
       key: "action",
       render: (_: any, record: IRouteResponse) => (
         <Space size="middle">
-          <Button type="dashed" onClick={() => onEdit(record.id as number)}>
+          <Link href={`/i/route/${record.id}`}>
             Изменить
-          </Button>
+          </Link>
           <Button
             type="primary"
             danger

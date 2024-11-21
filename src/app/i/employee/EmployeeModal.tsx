@@ -83,7 +83,7 @@ export default function EmployeeModal({
           value: itemEmployeeData?.post?.id,
           label: itemEmployeeData?.post?.post_name,
         },
-        department: { 
+        department: {
           value: itemEmployeeData?.department.id,
           label: itemEmployeeData?.department.department_name,
         }
@@ -104,7 +104,7 @@ export default function EmployeeModal({
 
   return (
     <Modal
-      title={`${type} кабинет`}
+      title={`${type} сотрудника`}
       open={isModalOpen}
       onCancel={() => {
         setIsModalOpen(false);

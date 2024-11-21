@@ -25,9 +25,16 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/login', req.nextUrl.origin));
   }
 
-  const isPathAllowed = allowedPaths.some(allowedPath =>
-    currentPath === allowedPath || currentPath.startsWith(allowedPath + '/')
-  );
+  // const isPathAllowed = allowedPaths.some(allowedPath => {
+  //   // Проверяем, является ли текущий путь точным совпадением или подмаршрутом
+  //   return currentPath === allowedPath || currentPath.startsWith(allowedPath + '/') || currentPath.startsWith(allowedPath + '/route/');
+  // });
+
+  const isPathAllowed = allowedPaths.some(allowedPath => {
+    // Создаем регулярное выражение для разрешенного пути
+    const regex = new RegExp(`^${allowedPath}(\\/[^\\/]+)*$`);
+    return regex.test(currentPath);
+  });
 
   if (!isPathAllowed) {
     // Server-side redirect to 403 page
