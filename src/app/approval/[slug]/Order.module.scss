@@ -7,12 +7,12 @@
     border-radius: 16px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
+
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
-  
+
     .formItemLabel {
       font-size: 20px;
       font-weight: 700;
@@ -21,7 +21,7 @@
       text-transform: uppercase;
       letter-spacing: 1.5px;
       transition: color 0.3s ease;
-  
+
       span {
         background-color: #1d6fb8;
         padding: 6px 10px;
@@ -31,19 +31,19 @@
         letter-spacing: 1px;
       }
     }
-  
+
     .formItemMain {
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;
       gap: 12px;
     }
-  
+
     .formItem {
       display: flex;
       flex-direction: column;
       gap: 10px;
-  
+
       .orderName {
         padding: 14px;
         border: 2px solid #678098;
@@ -52,29 +52,30 @@
         outline: none;
         resize: vertical;
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  
+
         &:focus {
           border: 2px solid #1d6fb8;
           box-shadow: 0 0 8px rgba(29, 111, 184, 0.4);
         }
-  
+
         &::placeholder {
           color: #678098;
           opacity: 0.7;
         }
       }
-  
+
       .images {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         gap: 16px;
         width: 100%;
-        justify-content: center;
+        justify-content: flex-start;
+        align-items: center;
         margin-top: 12px;
       }
     }
-  
+
     .error {
       color: #e74c3c;
       font-size: 14px;
@@ -82,7 +83,7 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-  
+
     .orderSubmit {
       padding: 14px 20px;
       border-radius: 8px;
@@ -93,15 +94,14 @@
       letter-spacing: 1.2px;
       transition: background-color 0.3s ease, transform 0.3s ease;
       cursor: pointer;
-  
+
       &:hover {
         background-color: #678098;
         transform: translateY(-2px);
       }
-  
+
       &:active {
         transform: translateY(0);
       }
     }
   }
-  

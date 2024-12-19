@@ -10,7 +10,7 @@
     .formItem{
         display: flex;
         flex-direction: column;
-        
+
         .formItemLabel{
             font-size: 16px;
             font-weight: 600;
@@ -25,7 +25,7 @@
             outline: none;
             resize: vertical;
 
-    
+
             &:focus{
             border: 2px solid #649ace;
             }
@@ -40,11 +40,12 @@
             flex-wrap: wrap;
             gap: 10px;
             width: 100%;
-            justify-content: center;
+            justify-content: flex-start;
+            align-items: center;
             margin-top: 10px;
         }
     }
-    
+
 
     .error{
         color: red;
@@ -64,6 +65,6 @@
         &:hover{
             background-color: #678098;
         }
-       
+
     }
 }

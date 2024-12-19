@@ -6,6 +6,7 @@ import style from './Order.module.scss';
 import OpenImage from '@/components/OpenImage/OpenImage';
 import { Input } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import FileRenderer from '@/components/FileReader/FileReader';
 
 interface Props {
   orderId?: string;
@@ -52,8 +53,8 @@ const Order = ({ orderId }: Props) => {
       <div className={style.formItem}>
         <label className={style.formItemLabel}>Изображения</label>
         <div className={style.images}>
-        {itemOrderData?.images && itemOrderData.images.map((img,index) => (
-          <OpenImage img={img} key={index}/>
+        {itemOrderData?.images && itemOrderData.images.map((fileUrl,index) => (
+          <FileRenderer key={index} fileUrl={fileUrl} />
         ))}
         </div>
       </div>

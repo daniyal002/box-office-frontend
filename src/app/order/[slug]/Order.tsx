@@ -23,6 +23,7 @@ import { OrderStatus } from "@/helper/orderStatusEnum";
 import OrderHistory from "@/components/Order/OrderHistory/OrderHistory";
 import { useHistoryData } from "@/hook/historyHook";
 import { IHistory } from "@/interface/history";
+import FileRenderer from "@/components/FileReader/FileReader";
 
 interface Props {
   orderId?: string;
@@ -216,8 +217,8 @@ const Order = ({ orderId }: Props) => {
 
             <div className={style.images}>
               {itemOrderData?.images &&
-                itemOrderData.images.map((img, index) => (
-                  <OpenImage img={img} key={index} />
+                itemOrderData.images.map((fileUrl, index) => (
+                  <FileRenderer key={index} fileUrl={fileUrl} />
                 ))}
             </div>
           </div>

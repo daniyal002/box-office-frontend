@@ -1,0 +1,29 @@
+.images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .imageContainer {
+    max-width: 200px;
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  .fileContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    p{
+        max-width: 300px; /* Ограничение ширины */
+        white-space: nowrap; /* Текст в одну строку */
+        overflow: hidden; /* Обрезать лишний текст */
+        text-overflow: ellipsis; /* Добавить многоточие */
+
+    }
+  }

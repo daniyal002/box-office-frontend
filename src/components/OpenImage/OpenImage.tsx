@@ -1,3 +1,4 @@
+import { baseURL } from "@/api/interseptors";
 import { IOrderImage } from "@/interface/order";
 import { Image } from "antd";
 
@@ -10,7 +11,7 @@ const OpenImage = ({ img }: Props) => {
     <>
       <Image
         width={200}
-        src={`http://176.124.208.40:3002/${img.image_src.replace(/\\/g, "/")}`}
+        src={`${baseURL}/${img.image_src.replace(/\\/g, "/")}`}
       />
     </>
   );
