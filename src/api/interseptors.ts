@@ -2,8 +2,8 @@ import { getAccessToken, getRefreshToken, removeAccessTokenFromStorage, removeRe
 import { authService } from '@/services/auth.service';
 import axios, { type CreateAxiosDefaults } from 'axios';
 
-export const baseURL = "http://192.168.30.119:3002";
-// export const baseURL = "https://api.zdsdana.ru";
+// export const baseURL = "http://192.168.30.119:3002";
+export const baseURL = "https://api.zdsdana.ru";
 
 const options: CreateAxiosDefaults = {
     baseURL: baseURL,
